@@ -10,8 +10,8 @@ namespace Commands
     [XmlRoot("Call")]
     public class Call:BaseCommand
     {
-        [XmlElement("sender")]
-        public string sender
+        [XmlElement("login")]
+        public string login
         {
             get;
             set;
@@ -19,7 +19,7 @@ namespace Commands
         public Call(string sender)
         {
             id = 3;
-            this.sender = sender;
+            this.login = login;
         }
     }
 }

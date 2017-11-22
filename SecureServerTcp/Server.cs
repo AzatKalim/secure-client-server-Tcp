@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Commands;
+using System.Security.Cryptography;
+using System.Numerics;
 
 namespace SecureServerTcp
 {
@@ -29,8 +31,6 @@ namespace SecureServerTcp
             }
         }
 
-        DateTime StartTime;
-
         Thread workThread;
 
         ServerCommand serverCommand;
@@ -45,6 +45,14 @@ namespace SecureServerTcp
 
         public status currentStatus;
 
+        const int CALL_ANSWER_LENGTH = 128;
+
+        const int SALT_LENGTH = 100;
+
+        static SHA1 hashFunction;
+
+        static int counter;
+
         public Server(int port = 7777)
         {
             //иницилизация 
@@ -52,8 +60,8 @@ namespace SecureServerTcp
             listOfIDAndClientCommands = new Dictionary<int, ClientCommand>();
             commandsAndClients = new Queue<CommandList>();
             currentStatus = status.on;
-            StartTime = DateTime.Now;
             clientsChanged = false;
+            hashFunction = SHA1Managed.Create();
             //запуск сервера команд
             serverCommand = new ServerCommand(port);
             serverCommand.EventHandlersListForServer += AddClientCommand;
@@ -123,23 +131,32 @@ namespace SecureServerTcp
                 {
                     case 1://Команда Call
                         {
-                            IntroReaction(baseCommand as Call, commandList.client);
+                            Reaction(baseCommand as Registration, commandList.client);
                         }
                         break;
-                    case 4://Команда Chat
+                    case 3://Команда Call
                         {
-                            Chat chatCommand = baseCommand as Chat;
-                            ChatReaction(chatCommand, commandList.client);
+                            Reaction(baseCommand as Call, commandList.client);
                         }
                         break;
-                    case 10://Команада Move
+                    case 5://Команда KeyExchange
                         {
-                           
+                            Reaction(baseCommand as KeysExchange, commandList.client);
                         }
                         break;
-                    case 12://Команада Disconnect
+                    case 6://Команада Chat
                         {
-                            PlayerDisconnectReactio(commandList.client);
+                            Reaction(baseCommand as Chat, commandList.client);
+                        }
+                        break;
+                    case 7://Команада Disconnect
+                        {
+                            Reaction(baseCommand as Stop,commandList.client);
+                        }
+                        break;
+                    case 8://Команда Autentification
+                        {
+                            Reaction(baseCommand as Autentification, commandList.client);
                         }
                         break;
                     default:
@@ -148,93 +165,88 @@ namespace SecureServerTcp
                 }
             }
         }
-
-
-        bool CallReaction(Call call, ClientCommand client)
+        void Reaction(Registration command, ClientCommand client)
         {
             var context = new securityEntities();
 
             foreach (var user in context.users)
             {
-                if (user.login == login)
+                if (user.login == command.login)
                 {
-                    Console.WriteLine("Пользователь {0}, получил ответ", login);
-                    currentUser = user;
-                    return user.salt;
+                    client.SendCommand(new RegistratioAnswer("-1"));
                 }
             }
-            Console.WriteLine("Пользователь {0},не получил ответ", login);
-            return "-1";
+            string newsalt = GenerateSalt();
+            var us = new users()
+            {
+                id = counter,
+                login = command.login,
+                password_hash = ComputeHash(command.password, newsalt),
+                salt = newsalt,
+            };
+            context.users.Add(us);
+            context.SaveChanges();
+            Console.WriteLine("Пользователь {0}, зарегистрерирован", command.password);
+            client.SendCommand(new RegistratioAnswer(us.salt));
         }
-        //реакция на Intro
-        bool IntroReaction(Intro command, ClientCommand client)
+
+        void Reaction(Call call, ClientCommand client)
         {
-            Response answer;
-            //если игра не в фазе ожидания
-            if (gameData.currentStatus != GameData.GameStatus.waiting)
-            {
-                //отправка сообщени об ошибке 
-                answer = new Response("notok", "ERROR.Game already starded");
-                client.SendCommand(answer as BaseCommand);
-                //отсоединение игрока
-                client.Disconnect();
-                serverCommand.DeleteClient(client);
+            var context = new securityEntities();
 
-                return false;
-            }
-
-            bool nameAlreadyInGame = false;
-            //проверка , есть уже грок с таким именем
-            foreach (KeyValuePair<int, string> player in listOfIDAndNames)
+            foreach (var user in context.users)
             {
-                if (player.Value == command.name)
+                if (user.login == call.login)
                 {
-                    nameAlreadyInGame = true;
-                    break;
+                    Console.WriteLine("Пользователь {0}, получил ответ", call.login);
+                    client.SendCommand(new CallAnswer(user.salt));
                 }
             }
-            //если уже есть
-            if (nameAlreadyInGame)
-            {
-                answer = new Response("notok", "ERROR.User with this name have already entered");
-                client.SendCommand(answer as BaseCommand);
-                //отсоединение игрока
-                client.Disconnect();
-                serverCommand.DeleteClient(client);
-                return false;
-            }
-            else
-            {
-                //добавление игрока
-                answer = new Response("ok", "welcome, " + command.name);
-                client.SendCommand(answer as BaseCommand);
-                listOfIDAndNames.Add(client.id, command.name);
-                listOfIDAndClientCommands.Add(client.id, client);
-                gameData.AddPlayer(command.name);
-                playersChanged = true;
-            }
-            return true;
+            Console.WriteLine("Пользователь {0},не получил ответ", call.login);
+            client.SendCommand(new CallAnswer("-1"));
         }
 
+        void Reaction(Chat command, ClientCommand client)
+        {
+            foreach (var item in listOfIDAndClientCommands)
+            {
+                if (client != item.Value)
+                {
+                    item.Value.SendCommand(command);
+                }
+            }
+        }
+
+        void Reaction(Autentification command, ClientCommand client)
+        {           
+        }
+
+        void Reaction(Stop command, ClientCommand client)
+        {
+        }
+
+        void Reaction(KeysExchange command, ClientCommand client)
+        {
+        }
+                
         //реакция на на отключение
         void PlayerDisconnectReaction(ClientCommand client)
         {
-            playersChanged = true;
             DeleteClient(client);
         }
 
         //реакция на Chat
-        void Reaction(Chat chatCommand, ClientCommand client)
-        {
-            string name = FindName(client.id);
-            //если имя не найдено => игрок не авторизован
-            if (name == null)
-            {
-                client.SendCommand(new Chat("Server", "ERROR.Cant use chat without authorization"));
-                return;
-            }
-            SendToAllPlayers(new Chat(name, chatCommand.text));
-        }
+        //void Reaction(Chat chatCommand, ClientCommand client)
+        //{
+        //    string name = FindName(client.id);
+        //    //если имя не найдено => игрок не авторизован
+        //    if (name == null)
+        //    {
+        //        client.SendCommand(new Chat("Server", "ERROR.Cant use chat without authorization"));
+        //        return;
+        //    }
+        //    SendToAllPlayers(new Chat(name, chatCommand.text));
+        //}
      
         //остановка работы сервера 
         public void Stop()
@@ -251,12 +263,10 @@ namespace SecureServerTcp
 
         //удаление игрока 
         void DeleteClient(ClientCommand client)
-        {
-            gameData.DeletePlayer(FindName(client.id));
+        {         
             listOfIDAndClientCommands.Remove(client.id);
             listOfIDAndNames.Remove(client.id);
             serverCommand.DeleteClient(client as ClientSocket);
-            playersChanged = true;
         }
        
         void SendToAllPlayers(BaseCommand command)
@@ -321,6 +331,38 @@ namespace SecureServerTcp
                 }
             }
             return result;
+        }
+
+        private string GenerateSalt()
+        {
+            return RandomNum(SALT_LENGTH).ToString();
+        }
+
+        private BigInteger RandomNum(int length)
+        {
+            var N = BigInteger.Pow(2, length);
+            byte[] bytes = N.ToByteArray();
+            BigInteger R;
+            var random = new Random();
+            random.NextBytes(bytes);
+            bytes[bytes.Length - 1] &= (byte)0x7F;
+            R = new BigInteger(bytes);
+            while (R > N - 1)
+            {
+                R -= N;
+            }
+            if (R == 1)
+            {
+                R++;
+            }
+            return R;
+        }
+
+        private string ComputeHash(string message, string salt)
+        {
+            Byte[] msgByteArr = Encoding.ASCII.GetBytes(message + salt);
+            Byte[] hashArray = hashFunction.ComputeHash(msgByteArr);
+            return Encoding.ASCII.GetString(hashArray); ;
         }
     }
 }

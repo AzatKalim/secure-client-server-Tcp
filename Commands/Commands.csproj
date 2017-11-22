@@ -39,11 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Autentification.cs" />
     <Compile Include="BaseCommand.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CallAnswer.cs" />
     <Compile Include="Chat.cs" />
-    <Compile Include="KeysEchange.cs" />
+    <Compile Include="KeysExchange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistratioAnswer.cs" />
     <Compile Include="Registration.cs" />

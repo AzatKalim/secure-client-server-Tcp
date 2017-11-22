@@ -41,7 +41,7 @@ namespace Commands
                     }
                 case 5:
                     {
-                        return typeof(KeysEchange);
+                        return typeof(KeysExchange);
                     }
                 case 6:
                     {
@@ -50,6 +50,10 @@ namespace Commands
                 case 7:
                     {
                         return typeof(Stop);
+                    }
+                case 8:
+                    {
+                        return typeof(Autentification);
                     }
                 default: return null;
             }

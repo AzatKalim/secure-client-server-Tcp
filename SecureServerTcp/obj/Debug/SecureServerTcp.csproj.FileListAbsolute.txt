@@ -1,0 +1,10 @@
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\SecureServerTcp.exe.config
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\obj\Debug\SecureServerTcp.csprojResolveAssemblyReference.cache
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\SecureServerTcp.exe
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\SecureServerTcp.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\Commands.dll
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\EntityFramework.dll
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\Commands.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\EntityFramework.xml
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\obj\Debug\SecureServerTcp.exe
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\obj\Debug\SecureServerTcp.pdb

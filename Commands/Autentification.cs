@@ -7,8 +7,8 @@ using System.Xml;
 
 namespace Commands
 {
-    [XmlRoot("Registration")]
-    public class Registration : BaseCommand
+    [XmlRoot("Autentification")]
+    public class Autentification:BaseCommand
     {
         [XmlElement("login")]
         public string login
@@ -17,23 +17,23 @@ namespace Commands
             set;
         }
 
-        [XmlElement("password")]
-        public string password
+        [XmlElement("passwordHash")]
+        public string passwordHash
         {
             get;
             set;
         }
 
-        public Registration(string login,string password)
+        public Autentification(string login,string passwordHash)
         {
-            id = 1;
+            id = 8;
             this.login= login;
-            this.password= password;
+            this.passwordHash = passwordHash;
         }
 
-        public Registration()
+        public Autentification()
         {
-            id = 1;           
+            id = 8;           
         }
 
         public override string ToString()
@@ -41,5 +41,4 @@ namespace Commands
             return base.ToString();
         }
     }
-    
 }
