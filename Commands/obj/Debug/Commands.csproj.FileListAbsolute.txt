@@ -1,0 +1,5 @@
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\bin\Debug\Commands.dll
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\bin\Debug\Commands.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\obj\Debug\Commands.csprojResolveAssemblyReference.cache
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\obj\Debug\Commands.dll
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\obj\Debug\Commands.pdb

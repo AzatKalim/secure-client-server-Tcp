@@ -1,0 +1,2 @@
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Release\SecureServerTcp.exe.config
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\obj\Release\SecureServerTcp.csprojResolveAssemblyReference.cache

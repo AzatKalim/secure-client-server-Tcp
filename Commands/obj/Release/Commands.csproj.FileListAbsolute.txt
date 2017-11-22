@@ -1,0 +1,4 @@
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\bin\Release\Commands.dll
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\bin\Release\Commands.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\obj\Release\Commands.dll
+C:\Users\Азат\Desktop\SecureServerTcp\Commands\obj\Release\Commands.pdb
