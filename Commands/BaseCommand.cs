@@ -55,6 +55,10 @@ namespace Commands
                     {
                         return typeof(Autentification);
                     }
+                case 9:
+                    {
+                        return typeof(AutentificationAnswer);
+                    }
                 default: return null;
             }
         }

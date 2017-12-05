@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Net;
+using System.Net.Sockets;
 
-namespace SecureServerTcp
+namespace SecureClientTcp
 {
     delegate void ClientEvent(ClientSocket cl);
 
@@ -37,7 +37,7 @@ namespace SecureServerTcp
             get;
         }
 
-        protected TcpClient socket;
+        protected Socket socket;
 
         public ClientSocket()
         {
@@ -49,12 +49,29 @@ namespace SecureServerTcp
             socket = client;
             socket.NoDelay = true;
             buffer = new byte[2048];
-            stream = new NetworkStream(socket.Client);
+            stream = new NetworkStream(socket);
             bytesCount = 0;
             work_thread = new Thread(new ThreadStart(ReadMessage));
             work_thread.Start();
         }
-      
+
+        public ClientSocket(string ipAdress, int port)
+        {
+            IPHostEntry ipHost = Dns.GetHostEntry(ipAdress);
+            IPAddress ipAddr = ipHost.AddressList[0];
+            IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, port);
+
+            Socket sender = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.NoDelay = true;
+            buffer = new byte[2048];
+            stream = new NetworkStream(socket);
+            bytesCount = 0;
+            work_thread = new Thread(new ThreadStart(ReadMessage));
+            work_thread.Start();
+            // Соединяем сокет с удаленной точкой
+            sender.Connect(ipEndPoint);
+        }
+
         public bool SendMessage(string message)
         {
             try
@@ -125,7 +142,7 @@ namespace SecureServerTcp
         {
             clientState = ClientState.DISCONNECTED;
             work_thread.Abort();
-            work_thread.Join();          
+            work_thread.Join();
             socket.Close();
         }
 
@@ -148,6 +165,7 @@ namespace SecureServerTcp
                 return null;
             }
         }
+
         ~ClientSocket()
         {
         }

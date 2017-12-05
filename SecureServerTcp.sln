@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureServerTcp", "SecureSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commands", "Commands\Commands.csproj", "{7DB98148-6EBA-4458-A53F-FDF030FD39E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureClientTcp", "SecureClientTcp\SecureClientTcp.csproj", "{1D869083-1899-4719-96A7-8CE6F2E2E468}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{7DB98148-6EBA-4458-A53F-FDF030FD39E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DB98148-6EBA-4458-A53F-FDF030FD39E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DB98148-6EBA-4458-A53F-FDF030FD39E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D869083-1899-4719-96A7-8CE6F2E2E468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D869083-1899-4719-96A7-8CE6F2E2E468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D869083-1899-4719-96A7-8CE6F2E2E468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D869083-1899-4719-96A7-8CE6F2E2E468}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

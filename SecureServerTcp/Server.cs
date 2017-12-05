@@ -165,6 +165,7 @@ namespace SecureServerTcp
                 }
             }
         }
+
         void Reaction(Registration command, ClientCommand client)
         {
             var context = new securityEntities();
@@ -218,11 +219,24 @@ namespace SecureServerTcp
         }
 
         void Reaction(Autentification command, ClientCommand client)
-        {           
+        {
+            var context = new securityEntities();
+            foreach (var user in context.users)
+            {
+                if (user.login == command.login && user.password_hash == command.passwordHash)
+                {
+                    client.SendCommand(new AutentificationAnswer(true));
+                    return;
+                }
+            }
+            client.SendCommand(new AutentificationAnswer(false));
+
         }
 
         void Reaction(Stop command, ClientCommand client)
         {
+            client.Disconnect();
+            DeleteClient(client);
         }
 
         void Reaction(KeysExchange command, ClientCommand client)
@@ -235,19 +249,6 @@ namespace SecureServerTcp
             DeleteClient(client);
         }
 
-        //реакция на Chat
-        //void Reaction(Chat chatCommand, ClientCommand client)
-        //{
-        //    string name = FindName(client.id);
-        //    //если имя не найдено => игрок не авторизован
-        //    if (name == null)
-        //    {
-        //        client.SendCommand(new Chat("Server", "ERROR.Cant use chat without authorization"));
-        //        return;
-        //    }
-        //    SendToAllPlayers(new Chat(name, chatCommand.text));
-        //}
-     
         //остановка работы сервера 
         public void Stop()
         {
