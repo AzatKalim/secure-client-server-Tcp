@@ -16,10 +16,14 @@ namespace Commands
             get;
             set;
         } 
-        public Call(string sender)
+        public Call(string login)
         {
             id = 3;
             this.login = login;
+        }
+        public Call()
+        {
+            id = 3;
         }
     }
 }

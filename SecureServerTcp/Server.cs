@@ -53,7 +53,9 @@ namespace SecureServerTcp
 
         static int counter;
 
-        public Server(int port = 7777)
+        securityEntities context ;
+
+        public Server(int port = 11000)
         {
             //иницилизация 
             listOfIDAndNames = new Dictionary<int, string>();
@@ -69,6 +71,7 @@ namespace SecureServerTcp
             //поток для выполнения рутины
             workThread = new Thread(new ThreadStart(ServerRoutine));
             workThread.Start();
+            context = new securityEntities();
         }
 
         ~Server()
@@ -84,7 +87,7 @@ namespace SecureServerTcp
             while (currentStatus != status.off)
             {
                 //задержка между проходами сервера 
-                Thread.Sleep(10);
+                Thread.Sleep(100);
 
                 //обработка пришедших комманд
 
@@ -122,6 +125,7 @@ namespace SecureServerTcp
                 commandsAndClients.Enqueue(new CommandList(client));
             }
         }
+
         //реакции на команды от игроков
         void CommandReacion(CommandList commandList)
         {
@@ -168,13 +172,11 @@ namespace SecureServerTcp
 
         void Reaction(Registration command, ClientCommand client)
         {
-            var context = new securityEntities();
-
             foreach (var user in context.users)
             {
                 if (user.login == command.login)
                 {
-                    client.SendCommand(new RegistratioAnswer("-1"));
+                    client.SendCommand(new RegistratioAnswer(false));
                 }
             }
             string newsalt = GenerateSalt();
@@ -187,14 +189,12 @@ namespace SecureServerTcp
             };
             context.users.Add(us);
             context.SaveChanges();
-            Console.WriteLine("Пользователь {0}, зарегистрерирован", command.password);
-            client.SendCommand(new RegistratioAnswer(us.salt));
+            Console.WriteLine("Пользователь {0}, зарегистрерирован", command.login);
+            client.SendCommand(new RegistratioAnswer(true));
         }
 
         void Reaction(Call call, ClientCommand client)
         {
-            var context = new securityEntities();
-
             foreach (var user in context.users)
             {
                 if (user.login == call.login)
@@ -226,6 +226,10 @@ namespace SecureServerTcp
                 if (user.login == command.login && user.password_hash == command.passwordHash)
                 {
                     client.SendCommand(new AutentificationAnswer(true));
+                    clientsChanged = true;
+                    listOfIDAndNames.Add(client.id, command.login);
+                    listOfIDAndClientCommands.Add(client.id, client);
+                    Console.WriteLine("Пользователь {0} прошел аутентификацию",command.login);
                     return;
                 }
             }

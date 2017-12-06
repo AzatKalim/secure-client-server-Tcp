@@ -15,7 +15,8 @@ namespace SecureClientTcp
         CONNECTED,
         DISCONNECTED,
         ERROR,
-        Autorized
+        Autorized,
+        KeysExchanged
     }
     class ClientSocket
     {
@@ -37,39 +38,37 @@ namespace SecureClientTcp
             get;
         }
 
-        protected Socket socket;
+        protected TcpClient socket;
 
         public ClientSocket()
         {
         }
 
-        public ClientSocket(TcpClient client)
+        protected  ClientSocket(TcpClient client)
         {
             clientState = ClientState.CONNECTED;
             socket = client;
             socket.NoDelay = true;
             buffer = new byte[2048];
-            stream = new NetworkStream(socket);
+            stream = new NetworkStream(socket.Client);
             bytesCount = 0;
             work_thread = new Thread(new ThreadStart(ReadMessage));
             work_thread.Start();
         }
 
-        public ClientSocket(string ipAdress, int port)
+        protected ClientSocket(string ipAdress, int port)
         {
-            IPHostEntry ipHost = Dns.GetHostEntry(ipAdress);
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, port);
-
-            Socket sender = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket = new TcpClient();
+            // Соединяем сокет с удаленной точкой
+            socket.Connect(ipAdress, port);
             socket.NoDelay = true;
             buffer = new byte[2048];
-            stream = new NetworkStream(socket);
+            stream = new NetworkStream(socket.Client);
             bytesCount = 0;
+            clientState = ClientState.CONNECTED;
             work_thread = new Thread(new ThreadStart(ReadMessage));
             work_thread.Start();
-            // Соединяем сокет с удаленной точкой
-            sender.Connect(ipEndPoint);
+
         }
 
         public bool SendMessage(string message)

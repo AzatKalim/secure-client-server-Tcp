@@ -24,7 +24,7 @@ namespace Commands
             set;
         }
 
-        public Autentification(string login,string passwordHash)
+        public Autentification(string login, string passwordHash)
         {
             id = 8;
             this.login= login;

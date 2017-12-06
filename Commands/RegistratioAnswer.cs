@@ -11,15 +11,19 @@ namespace Commands
     public class RegistratioAnswer:BaseCommand
     {
         [XmlElement("answer")]
-        public string answer
+        public bool answer
         {
             get;
             set;
         }
-        public RegistratioAnswer(string answer)
+        public RegistratioAnswer(bool answer)
         {
             id = 2;
             this.answer = answer;
+        }
+        public RegistratioAnswer()
+        {
+            id = 2;
         }
     }
 }

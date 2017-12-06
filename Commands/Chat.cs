@@ -24,11 +24,11 @@ namespace Commands
             set;
         }
 
-        public Chat(string author, string msg)
+        public Chat(string sender, string msg)
         {
             id = 6;
             text = msg;
-            sender = author;
+            this.sender = sender;
         }
 
         public Chat()

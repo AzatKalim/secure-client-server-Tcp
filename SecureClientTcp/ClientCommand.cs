@@ -23,17 +23,15 @@ namespace SecureClientTcp
 
         StringBuilder sendBuffer;
 
-        public delegate void ClientCommandHandlerForServer(ClientCommand client);
+        public delegate void ClientCommandHandlerForServer();
 
         public event ClientCommandHandlerForServer ClientCommandHandlersListForServer;
 
-        public ClientCommand(TcpClient client)
+        public ClientCommand(string ipAdress,int port) : base (ipAdress,port)
         {
             id = ID;
             ID++;
             clientState = ClientState.CONNECTED;
-            this.socket = client;
-            buffer = new byte[2048];
             stream = new NetworkStream(socket.Client);
             bytesCount = 0;
             bufferCommand = new Queue<BaseCommand>();
@@ -68,13 +66,12 @@ namespace SecureClientTcp
             }
             if (ClientCommandHandlersListForServer != null)
             {
-                ClientCommandHandlersListForServer(this);
+                ClientCommandHandlersListForServer();
             }
         }
 
         public BaseCommand[] GetCommands()
         {
-
             if (bufferCommand.Count > 0)
             {
                 BaseCommand[] temp = new BaseCommand[bufferCommand.Count];

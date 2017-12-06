@@ -13,8 +13,8 @@ namespace Commands
         [XmlElement("answer")]
         public bool answer
         {
-            private get;
-            set;
+            get;
+            private set;
         }
 
         public AutentificationAnswer(bool answer)

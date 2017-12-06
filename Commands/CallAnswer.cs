@@ -21,5 +21,9 @@ namespace Commands
             id = 4;
             this.answer = answer;
         }
+        public CallAnswer()
+        {
+            id = 4;
+        }
     }
 }

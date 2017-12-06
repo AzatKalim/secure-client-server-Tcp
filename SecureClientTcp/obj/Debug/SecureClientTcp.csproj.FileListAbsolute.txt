@@ -1,0 +1,10 @@
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.csprojResolveAssemblyReference.cache
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.MainForm.resources
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.Properties.Resources.resources
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.csproj.GenerateResource.Cache
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\SecureClientTcp.exe
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\SecureClientTcp.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\Commands.dll
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\Commands.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.exe
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.pdb
