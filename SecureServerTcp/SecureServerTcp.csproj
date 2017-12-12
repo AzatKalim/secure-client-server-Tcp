@@ -106,6 +106,10 @@
       <Project>{7db98148-6eba-4458-a53f-fdf030fd39e4}</Project>
       <Name>Commands</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Encription\Encription.csproj">
+      <Project>{4cc4ec91-2c4f-40d3-b18a-056bc4880dbe}</Project>
+      <Name>Encription</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

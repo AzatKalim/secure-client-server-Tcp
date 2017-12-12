@@ -6,7 +6,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using System.Numerics;
 using Commands;
-
+using Encription;
 
 
 namespace SecureClientTcp
@@ -19,8 +19,11 @@ namespace SecureClientTcp
         ERROR,
         DISCONNETED
     }
+
     class Client
     {
+        #region Params 
+
         ClientCommand clientCommand;
 
         static SHA1 hashFunction;
@@ -35,6 +38,14 @@ namespace SecureClientTcp
 
         ManualResetEvent callGetEvent;
 
+        ManualResetEvent keysGetEvent;
+
+        Encoding enc = Encoding.Default;
+
+        #endregion
+
+        #region Delegates
+
         public delegate void ClientDisconnect();
 
         public delegate void ClientStatusChanged(bool result);
@@ -48,7 +59,11 @@ namespace SecureClientTcp
         public event ClientNewMessageArriver ClientMessageHandlerListForUI;
 
         public event ClientDisconnect ClientDisconnectHandlerListForUI;
-      
+
+        #endregion 
+
+        #region Construtors
+
         public Client(string ipAdress="localhost",int port=11000)
         {
             arrivedCommands = new Queue<BaseCommand>();
@@ -56,9 +71,21 @@ namespace SecureClientTcp
             clientCommand.ClientCommandHandlersListForServer += NewCommandReacion;
             hashFunction = SHA1Managed.Create();
             callGetEvent = new ManualResetEvent(false);
+            keysGetEvent = new ManualResetEvent(false);
             workThread= new Thread(new ThreadStart(ClientRoutine));
             workThread.Start();
         }
+
+        public void KeyExchangeStart()
+        {
+            clientCommand.encription= new RC4();
+            clientCommand.SendCommand(new PreKeyExchange(clientCommand.encription.q.ToString(),
+                                                        clientCommand.encription.field.ToString(),
+                                                        clientCommand.encription.GenerateParam().ToString()));
+
+        }
+
+        #endregion 
 
         public void ClientRoutine()
         {
@@ -80,7 +107,9 @@ namespace SecureClientTcp
             }
         }
 
-        public void NewCommandReacion()
+        #region Reaction on new commands
+
+        void NewCommandReacion()
         {
             BaseCommand[] commands = clientCommand.GetCommands();
             //извлечение команд из буффера
@@ -89,16 +118,16 @@ namespace SecureClientTcp
                 foreach (var item in commands)
                 {
                     arrivedCommands.Enqueue(item);
-                }
-                
+                }               
             }
         }
 
         void CommandReacion(BaseCommand command)
         {
+            Type type=BaseCommand.ReturnTypeOfCommand(command.id);
             switch (command.id)
             {
-                case 2://Команда CallAnswer
+                case 2://Команда RegistrationAnswer
                     {
                         Reaction(command as RegistratioAnswer);
                     }
@@ -123,7 +152,7 @@ namespace SecureClientTcp
                         Reaction(command  as Stop);
                     }
                     break;
-                case 8://Команда Autentification
+                case 9://Команда Autentification
                     {
                         Reaction(command  as AutentificationAnswer);
                     }
@@ -180,7 +209,10 @@ namespace SecureClientTcp
 
         void Reaction (KeysExchange command)
         {
-
+            if (command.sender == "server")
+            {
+                clientCommand.encription.SetKey(command.param);
+            }
         }
 
         void Reaction (Chat chatCommand)
@@ -201,25 +233,46 @@ namespace SecureClientTcp
             }
         }
 
+        #endregion 
+
+        #region Public Methods for User
+
         public void Autentification(string login,string password)
         {
+            KeyExchangeStart();
             clientCommand.SendCommand(new Call(login));
             callGetEvent.WaitOne();
             callGetEvent.Reset();
-            clientCommand.SendCommand(new Registration(login,ComputeHash(password + callAnswer.ToString())));
+            if (callAnswer == -1)
+            {
+                ClientAuthorizedHandlersListForUI(false);
+                return;
+            }
+            clientCommand.SendCommand(new Autentification(login,ComputeHash(password,callAnswer)));
         }
 
         public void Registration(string login, string password)
         {
+            KeyExchangeStart();
             clientCommand.SendCommand(new Registration(login,password));
         }
 
-
-        private string ComputeHash(string message)
+        public bool SendMessage(string name,string message)
         {
-            Byte[] msgByteArr = Encoding.ASCII.GetBytes(message);
-            Byte[] hashArray = hashFunction.ComputeHash(msgByteArr);
-            return Encoding.ASCII.GetString(hashArray);
+            return clientCommand.SendCommand(new Chat(name,message));
+
         }
+        #endregion 
+
+        #region Secondary functions 
+
+        private byte[] ComputeHash(string message, BigInteger salt)
+        {
+            Byte[] msgByteArr = enc.GetBytes(message + salt.ToString());
+            Byte[] hashArray = hashFunction.ComputeHash(msgByteArr);
+            return hashArray;
+        }
+
+        #endregion 
     }
 }

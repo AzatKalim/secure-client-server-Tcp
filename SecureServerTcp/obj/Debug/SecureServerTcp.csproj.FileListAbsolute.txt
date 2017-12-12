@@ -8,3 +8,5 @@ C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\Commands.pdb
 C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\EntityFramework.xml
 C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\obj\Debug\SecureServerTcp.exe
 C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\obj\Debug\SecureServerTcp.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\Encription.dll
+C:\Users\Азат\Desktop\SecureServerTcp\SecureServerTcp\bin\Debug\Encription.pdb

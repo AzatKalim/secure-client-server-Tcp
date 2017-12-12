@@ -7,14 +7,14 @@ using System.Xml;
 
 namespace Commands
 {
-    [XmlRoot("Autentification")]
+    [XmlRoot("AutentificationAnswer")]
     public class AutentificationAnswer:BaseCommand
     {
         [XmlElement("answer")]
         public bool answer
         {
             get;
-            private set;
+            set;
         }
 
         public AutentificationAnswer(bool answer)

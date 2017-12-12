@@ -1,0 +1,5 @@
+C:\Users\Азат\Desktop\SecureServerTcp\Encription\bin\Debug\Encription.dll
+C:\Users\Азат\Desktop\SecureServerTcp\Encription\bin\Debug\Encription.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\Encription\obj\Debug\Encription.csprojResolveAssemblyReference.cache
+C:\Users\Азат\Desktop\SecureServerTcp\Encription\obj\Debug\Encription.dll
+C:\Users\Азат\Desktop\SecureServerTcp\Encription\obj\Debug\Encription.pdb

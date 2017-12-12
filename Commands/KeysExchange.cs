@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Commands
 {
-    [XmlRoot("keys")]
+    [XmlRoot("KeysExchange")]
     public class KeysExchange:BaseCommand
     {
         [XmlElement("sender")]
@@ -17,17 +17,16 @@ namespace Commands
             set;
         }
 
-        [XmlElement("key")]
-        public string key
+        [XmlElement("param")]
+        public string param
         {
             get;
             set;
         }
-
-        public KeysExchange(string sender, string key)
+        public KeysExchange(string sender, string param)
         {
             id = 5;
-            this.key = key;
+            this.param = param;
             this.sender = sender;
         }
 

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7DB98148-6EBA-4458-A53F-FDF030FD39E4}</ProjectGuid>
+    <ProjectGuid>{4CC4EC91-2C4F-40D3-B18A-056BC4880DBE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Commands</RootNamespace>
-    <AssemblyName>Commands</AssemblyName>
+    <RootNamespace>Encription</RootNamespace>
+    <AssemblyName>Encription</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -39,18 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Autentification.cs" />
-    <Compile Include="AutentificationAnswer.cs" />
-    <Compile Include="BaseCommand.cs" />
-    <Compile Include="Call.cs" />
-    <Compile Include="CallAnswer.cs" />
-    <Compile Include="Chat.cs" />
-    <Compile Include="KeysExchange.cs" />
-    <Compile Include="PreKeyExchange.cs" />
+    <Compile Include="RC4.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistratioAnswer.cs" />
-    <Compile Include="Registration.cs" />
-    <Compile Include="Stop.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

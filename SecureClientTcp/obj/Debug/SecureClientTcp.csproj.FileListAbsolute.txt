@@ -8,3 +8,5 @@ C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\Commands.dll
 C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\Commands.pdb
 C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.exe
 C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\obj\Debug\SecureClientTcp.pdb
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\Encription.dll
+C:\Users\Азат\Desktop\SecureServerTcp\SecureClientTcp\bin\Debug\Encription.pdb

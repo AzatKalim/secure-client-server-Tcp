@@ -18,13 +18,13 @@ namespace Commands
         }
 
         [XmlElement("passwordHash")]
-        public string passwordHash
+        public byte[] passwordHash
         {
             get;
             set;
         }
 
-        public Autentification(string login, string passwordHash)
+        public Autentification(string login, byte[] passwordHash)
         {
             id = 8;
             this.login= login;

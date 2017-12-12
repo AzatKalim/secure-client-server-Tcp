@@ -16,12 +16,13 @@ namespace SecureClientTcp
 
         ManualResetEvent _event;
 
-        bool reg;
+        bool canSendMessage;
+
         public MainForm()
         {
             InitializeComponent();
             _event = new ManualResetEvent(false);
-            reg = false;
+            canSendMessage = false;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -39,7 +40,7 @@ namespace SecureClientTcp
             client.ClientMessageHandlerListForUI += NewMessage;
             client.Registration(loginTextBox.Text, passwordTextBox.Text);
             _event.WaitOne();
-            if (reg)
+            if (canSendMessage)
             {
                 ClientReady();
             }
@@ -55,13 +56,13 @@ namespace SecureClientTcp
             if (result)
             {
                 MessageBox.Show("Регитрация", "успех", MessageBoxButtons.OK);
-                reg = true;
+                canSendMessage = true;
                 _event.Set();
             }
             else
             {
-                MessageBox.Show("Регитрация", "уже существует пользоватьль", MessageBoxButtons.OK);
-                reg = false;
+                MessageBox.Show("Регитрация", "уже существует пользователь", MessageBoxButtons.OK);
+                canSendMessage = false;
                 _event.Set();
                 ClientChanged();
             }
@@ -72,14 +73,14 @@ namespace SecureClientTcp
         {
             if (result)
             {
-                MessageBox.Show("успех","Аутентификация", MessageBoxButtons.OK);
-                reg = true;
+                MessageBox.Show("Аутентификация","успех", MessageBoxButtons.OK);
+                canSendMessage = true;
                 _event.Set();
             }
             else
             {
                 MessageBox.Show("отказано","Аутентификация", MessageBoxButtons.OK);
-                reg = false;
+                canSendMessage = false;
                 _event.Set();
             }
         }
@@ -91,7 +92,8 @@ namespace SecureClientTcp
 
         public void NewMessage(string sender,string message)
         {
-            chatTextBox.AppendText("user"+sender+": "+ message); 
+            chatTextBox.Invoke(new Action(() => { chatTextBox.AppendText("user " + sender + " : " + message+Environment.NewLine);}));
+             
         }
 
         private void ClientReady()
@@ -120,13 +122,21 @@ namespace SecureClientTcp
             client.ClientMessageHandlerListForUI += NewMessage;
             client.Autentification(loginTextBox.Text, passwordTextBox.Text);
             _event.WaitOne();
-            if (reg)
+            if (canSendMessage)
             {
                 ClientReady();
             }
             else
             {
                 ClientChanged();
+            }
+        }
+
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            if (canSendMessage)
+            {
+                client.SendMessage(loginTextBox.Text, messageTextBox.Text);
             }
         }
     }

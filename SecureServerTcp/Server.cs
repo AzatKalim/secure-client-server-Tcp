@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Commands;
 using System.Security.Cryptography;
 using System.Numerics;
+using Encription;
 
 namespace SecureServerTcp
 {
@@ -22,6 +23,7 @@ namespace SecureServerTcp
         public struct CommandList
         {
             public ClientCommand client;
+
             public BaseCommand[] commands;
 
             public CommandList(ClientCommand clientCommand)
@@ -30,6 +32,14 @@ namespace SecureServerTcp
                 commands = clientCommand.GetCommands();
             }
         }
+
+        #region Constatants 
+
+        const int CALL_ANSWER_LENGTH = 128;
+
+        const int SALT_LENGTH = 100;
+
+        #endregion
 
         Thread workThread;
 
@@ -45,15 +55,13 @@ namespace SecureServerTcp
 
         public status currentStatus;
 
-        const int CALL_ANSWER_LENGTH = 128;
-
-        const int SALT_LENGTH = 100;
-
         static SHA1 hashFunction;
 
         static int counter;
 
-        securityEntities context ;
+        securityEntities context;
+
+        Encoding enc = Encoding.Default;
 
         public Server(int port = 11000)
         {
@@ -163,6 +171,11 @@ namespace SecureServerTcp
                             Reaction(baseCommand as Autentification, commandList.client);
                         }
                         break;
+                    case 10:
+                        {
+                            Reaction(baseCommand as PreKeyExchange, commandList.client);
+                        }
+                        break;
                     default:
                         Console.WriteLine("Unnown command");
                         break;
@@ -179,13 +192,14 @@ namespace SecureServerTcp
                     client.SendCommand(new RegistratioAnswer(false));
                 }
             }
-            string newsalt = GenerateSalt();
+            BigInteger newsalt = GenerateSalt();
+
             var us = new users()
             {
                 id = counter,
                 login = command.login,
                 password_hash = ComputeHash(command.password, newsalt),
-                salt = newsalt,
+                salt = newsalt.ToString(),
             };
             context.users.Add(us);
             context.SaveChanges();
@@ -201,6 +215,7 @@ namespace SecureServerTcp
                 {
                     Console.WriteLine("Пользователь {0}, получил ответ", call.login);
                     client.SendCommand(new CallAnswer(user.salt));
+                    return;
                 }
             }
             Console.WriteLine("Пользователь {0},не получил ответ", call.login);
@@ -209,12 +224,10 @@ namespace SecureServerTcp
 
         void Reaction(Chat command, ClientCommand client)
         {
+            Console.WriteLine("Chat: sender {0}, message {1}", command.sender, command.text);
             foreach (var item in listOfIDAndClientCommands)
             {
-                if (client != item.Value)
-                {
-                    item.Value.SendCommand(command);
-                }
+                item.Value.SendCommand(command);
             }
         }
 
@@ -223,16 +236,22 @@ namespace SecureServerTcp
             var context = new securityEntities();
             foreach (var user in context.users)
             {
-                if (user.login == command.login && user.password_hash == command.passwordHash)
+                if (user.login == command.login)
                 {
-                    client.SendCommand(new AutentificationAnswer(true));
+                    Console.WriteLine(enc.GetString(command.passwordHash));
+                    Console.WriteLine(user.password_hash);
+                }
+                if (user.login == command.login && user.password_hash == enc.GetString(command.passwordHash))
+                {
                     clientsChanged = true;
                     listOfIDAndNames.Add(client.id, command.login);
                     listOfIDAndClientCommands.Add(client.id, client);
                     Console.WriteLine("Пользователь {0} прошел аутентификацию",command.login);
+                    client.SendCommand(new AutentificationAnswer(true));
                     return;
                 }
             }
+            Console.WriteLine("Пользователь {0}  не прошел аутентификацию", command.login);
             client.SendCommand(new AutentificationAnswer(false));
 
         }
@@ -246,7 +265,14 @@ namespace SecureServerTcp
         void Reaction(KeysExchange command, ClientCommand client)
         {
         }
-                
+
+        void Reaction(PreKeyExchange command, ClientCommand client)
+        {
+            client.encription = new RC4(command.q, command.n);
+            client.SendCommand( new KeysExchange("server",client.encription.GenerateParam().ToString()));
+            client.encription.SetKey(command.param);
+            Console.WriteLine("Key exchange!");
+        }
         //реакция на на отключение
         void PlayerDisconnectReaction(ClientCommand client)
         {
@@ -338,36 +364,16 @@ namespace SecureServerTcp
             return result;
         }
 
-        private string GenerateSalt()
+        private BigInteger GenerateSalt()
         {
-            return RandomNum(SALT_LENGTH).ToString();
+            return RC4.RandomNum(SALT_LENGTH);
         }
 
-        private BigInteger RandomNum(int length)
+        private string ComputeHash(string message, BigInteger salt)
         {
-            var N = BigInteger.Pow(2, length);
-            byte[] bytes = N.ToByteArray();
-            BigInteger R;
-            var random = new Random();
-            random.NextBytes(bytes);
-            bytes[bytes.Length - 1] &= (byte)0x7F;
-            R = new BigInteger(bytes);
-            while (R > N - 1)
-            {
-                R -= N;
-            }
-            if (R == 1)
-            {
-                R++;
-            }
-            return R;
-        }
-
-        private string ComputeHash(string message, string salt)
-        {
-            Byte[] msgByteArr = Encoding.ASCII.GetBytes(message + salt);
+            Byte[] msgByteArr = enc.GetBytes(message + salt.ToString());
             Byte[] hashArray = hashFunction.ComputeHash(msgByteArr);
-            return Encoding.ASCII.GetString(hashArray); ;
+            return enc.GetString(hashArray);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Commands
 {
-    [XmlRoot("message")]
+    [XmlRoot("Chat")]
     public class Chat : BaseCommand
     {
         [XmlElement("sender")]

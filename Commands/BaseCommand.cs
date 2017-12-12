@@ -59,6 +59,10 @@ namespace Commands
                     {
                         return typeof(AutentificationAnswer);
                     }
+                case 10:
+                    {
+                        return typeof(PreKeyExchange);
+                    }
                 default: return null;
             }
         }
@@ -86,6 +90,5 @@ namespace Commands
                 return null;
             }
         }
-
     }
 }

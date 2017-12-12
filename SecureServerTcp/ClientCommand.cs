@@ -6,6 +6,7 @@ using Commands;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using Encription;
 
 namespace SecureServerTcp
 {
@@ -22,6 +23,8 @@ namespace SecureServerTcp
         StringBuilder bufferMessage;
 
         StringBuilder sendBuffer;
+
+        public RC4 encription;
 
         public delegate void ClientCommandHandlerForServer(ClientCommand client);
 
