@@ -58,6 +58,10 @@ namespace SecureClientTcp
                 if (messageLength <= (bufferMessage.Length - 2))
                 {
                     String temp = bufferMessage.ToString(2, messageLength);
+                    if (id != 10 && id != 5)
+                    {
+                        temp=encription.Decode(temp);
+                    }
                     BaseCommand serializedCommand = BaseCommand.Deserialize(id, temp);
                     lock (bufferCommand)
                     {
@@ -99,6 +103,10 @@ namespace SecureClientTcp
             {
                 sendBuffer.Clear();
                 string newMessage = command.Serialize();
+                if (command.id != 10 && command.id != 5)
+                {
+                    newMessage=encription.Encode(newMessage);
+                }
                 sendBuffer.Append((char)command.id);
                 sendBuffer.Append((char)newMessage.Length);
                 sendBuffer.Append(newMessage);

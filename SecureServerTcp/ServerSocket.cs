@@ -52,7 +52,8 @@ namespace SecureServerTcp
         public void Disconnect()
         {
             accept_new_clients.Abort();
-            accept_new_clients.Join();
+            //accept_new_clients.Join();
+          
             for (int i = 0; i < clients.Count; i++)
             {
                 clients[i].Disconnect();

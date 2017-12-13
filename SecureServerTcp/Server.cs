@@ -236,11 +236,6 @@ namespace SecureServerTcp
             var context = new securityEntities();
             foreach (var user in context.users)
             {
-                if (user.login == command.login)
-                {
-                    Console.WriteLine(enc.GetString(command.passwordHash));
-                    Console.WriteLine(user.password_hash);
-                }
                 if (user.login == command.login && user.password_hash == enc.GetString(command.passwordHash))
                 {
                     clientsChanged = true;
@@ -271,7 +266,7 @@ namespace SecureServerTcp
             client.encription = new RC4(command.q, command.n);
             client.SendCommand( new KeysExchange("server",client.encription.GenerateParam().ToString()));
             client.encription.SetKey(command.param);
-            Console.WriteLine("Key exchange!");
+            Console.WriteLine("Key exchange! " + client.encription.key);
         }
         //реакция на на отключение
         void PlayerDisconnectReaction(ClientCommand client)

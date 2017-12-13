@@ -9,9 +9,9 @@ namespace SecureServerTcp
     {
         static void Main(string[] args)
         {
-            BigInteger te= 22;
-           Console.WriteLine( BigInteger.Parse(te.ToString()));
             Server server = new Server();
+            Console.ReadKey();
+            server.Stop();
         }
     }
 }

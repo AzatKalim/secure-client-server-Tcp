@@ -82,7 +82,8 @@ namespace SecureClientTcp
             clientCommand.SendCommand(new PreKeyExchange(clientCommand.encription.q.ToString(),
                                                         clientCommand.encription.field.ToString(),
                                                         clientCommand.encription.GenerateParam().ToString()));
-
+            keysGetEvent.WaitOne();
+            keysGetEvent.Reset();
         }
 
         #endregion 
@@ -211,7 +212,8 @@ namespace SecureClientTcp
         {
             if (command.sender == "server")
             {
-                clientCommand.encription.SetKey(command.param);
+                clientCommand.encription.SetKey(command.param);             
+                keysGetEvent.Set();
             }
         }
 

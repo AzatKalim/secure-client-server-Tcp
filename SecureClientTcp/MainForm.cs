@@ -73,7 +73,7 @@ namespace SecureClientTcp
         {
             if (result)
             {
-                MessageBox.Show("Аутентификация","успех", MessageBoxButtons.OK);
+                MessageBox.Show("успех","Аутентификация", MessageBoxButtons.OK);
                 canSendMessage = true;
                 _event.Set();
             }

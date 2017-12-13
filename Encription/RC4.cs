@@ -9,7 +9,9 @@ namespace Encription
 {
     public class RC4
     {
-        public const int SECURE_LENGTH=15;
+        public const int SECURE_LENGTH=100;
+        public const int CHAR_SIZE = 16;
+        Encoding encoding = Encoding.Default;
 
         public BigInteger key;
         public BigInteger x;
@@ -72,6 +74,38 @@ namespace Encription
                 R++;
             }
             return R;
+        }
+
+        public byte[] Encode(byte[] data)
+        {
+            byte[] result = new byte[data.Length];
+
+            byte[] keyBytes = key.ToByteArray();
+            for (int i=0, m = 0; m < data.Length;i++,m++)
+            {
+                if (i >= keyBytes.Length)
+                {
+                    i = 0;
+                }
+                result[m] = (byte)(data[m] ^ keyBytes[i]);
+            }
+
+            return result;
+        }
+
+        public byte[] Decode(byte[] dataB)
+        {
+            return Encode(dataB);
+        }
+
+        public string Encode(string message)
+        {
+            byte[] result = encoding.GetBytes(message);
+            return encoding.GetString(Encode(result));
+        }
+        public String Decode(string message)
+        {
+            return Encode(message);
         }
     }
 }
