@@ -106,10 +106,10 @@ namespace SecureClientTcp
 
         private void ClientChanged()
         {
-            chatTextBox.Visible = false;
-            label7.Visible = false;
-            sendButton.Visible = false;
-            messageTextBox.Visible = false;
+            chatTextBox.Invoke(new Action(() => { chatTextBox.Visible = false; }));
+            label7.Invoke(new Action(() => { label7.Visible = false; }));
+            sendButton.Invoke(new Action(() => { sendButton.Visible = false; }));
+            messageTextBox.Invoke(new Action(() => { messageTextBox.Visible = false; }));
         }
 
         private void autoButton_Click(object sender, EventArgs e)

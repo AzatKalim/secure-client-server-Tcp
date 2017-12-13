@@ -95,7 +95,7 @@ namespace SecureServerTcp
             while (currentStatus != status.off)
             {
                 //задержка между проходами сервера 
-                Thread.Sleep(100);
+                Thread.Sleep(10);
 
                 //обработка пришедших комманд
 
@@ -109,19 +109,19 @@ namespace SecureServerTcp
                     CommandReacion(temp);
                 }
 
-                lock (listOfIDAndClientCommands)
-                {
-                    // проверка на отлючившихся клиентов из-за ошибки
-                    for (int i = 0; i < listOfIDAndClientCommands.Count; i++)
-                    {
-                        if (listOfIDAndClientCommands[i].clientState == ClientState.ERROR)
-                        {
-                            ClientCommand client = listOfIDAndClientCommands[i];
-                            DeleteClient(client);
-                            i--;
-                        }
-                    }
-                }
+                ////lock (listOfIDAndClientCommands)
+                ////{
+                ////    // проверка на отлючившихся клиентов из-за ошибки
+                ////    for (int i = 0; i < listOfIDAndClientCommands.Count; i++)
+                ////    {
+                ////        if (listOfIDAndClientCommands[i].clientState == ClientState.ERROR)
+                ////        {
+                ////            ClientCommand client = listOfIDAndClientCommands[i];
+                ////            DeleteClient(client);
+                ////            i--;
+                ////        }
+                ////    }
+                ////}
             }            
         }
 
