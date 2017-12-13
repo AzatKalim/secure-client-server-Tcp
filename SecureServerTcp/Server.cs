@@ -125,6 +125,8 @@ namespace SecureServerTcp
             }            
         }
 
+        #region Commands Reaction
+
         public void NewCommandReacion(ClientCommand client)
         {
             //извлечение команды из буффера
@@ -268,18 +270,30 @@ namespace SecureServerTcp
             client.encription.SetKey(command.param);
             Console.WriteLine("Key exchange! " + client.encription.key);
         }
+
         //реакция на на отключение
         void PlayerDisconnectReaction(ClientCommand client)
         {
             DeleteClient(client);
         }
 
+        #endregion
+
+        #region Public Methods
         //остановка работы сервера 
         public void Stop()
         {
             currentStatus = status.off;
             serverCommand.Disconnect();
         }
+
+        public void SendToAll(string message)
+        {
+            SendToAllPlayers(new Chat("server",message));
+        }
+        #endregion
+
+        #region Secondary methods
 
         void AddClientCommand()
         {
@@ -289,12 +303,12 @@ namespace SecureServerTcp
 
         //удаление игрока 
         void DeleteClient(ClientCommand client)
-        {         
+        {
             listOfIDAndClientCommands.Remove(client.id);
             listOfIDAndNames.Remove(client.id);
             serverCommand.DeleteClient(client as ClientSocket);
         }
-       
+
         void SendToAllPlayers(BaseCommand command)
         {
             foreach (KeyValuePair<int, ClientCommand> player in listOfIDAndClientCommands)
@@ -370,5 +384,7 @@ namespace SecureServerTcp
             Byte[] hashArray = hashFunction.ComputeHash(msgByteArr);
             return enc.GetString(hashArray);
         }
+
+        #endregion
     }
 }

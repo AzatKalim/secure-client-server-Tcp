@@ -9,9 +9,36 @@ namespace SecureServerTcp
     {
         static void Main(string[] args)
         {
-            Server server = new Server();
-            Console.ReadKey();
-            server.Stop();
+            bool flag = true;
+            Server server=null;
+            while (flag)
+            {
+                Console.WriteLine("список команд:");
+                Console.WriteLine("start");
+                Console.WriteLine("stop");
+                Console.WriteLine("send");
+                string commnad = Console.ReadLine();
+                switch (commnad)
+                {
+                    case "start":
+                    {
+                        server = new Server();
+                    }
+                    break;
+                    case "stop":
+                    {
+                        server.Stop();
+                        flag = false;
+                    }
+                    break;
+                    case "send":
+                    {
+                        string message = Console.ReadLine();
+                        server.SendToAll(message);
+                    }
+                    break;
+                }
+            }
         }
     }
 }

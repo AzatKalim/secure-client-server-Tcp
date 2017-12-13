@@ -55,13 +55,13 @@ namespace SecureClientTcp
         {
             if (result)
             {
-                MessageBox.Show("Регитрация", "успех", MessageBoxButtons.OK);
+                MessageBox.Show( "успех","Региcтрация", MessageBoxButtons.OK);
                 canSendMessage = true;
                 _event.Set();
             }
             else
             {
-                MessageBox.Show("Регитрация", "уже существует пользователь", MessageBoxButtons.OK);
+                MessageBox.Show("уже существует пользователь", "Региcтрация", MessageBoxButtons.OK);
                 canSendMessage = false;
                 _event.Set();
                 ClientChanged();
